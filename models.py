@@ -29,13 +29,13 @@ class AttentionGRUCell(nn.Module):
         super(AttentionGRUCell, self).__init__()
         self.hidden_size = hidden_size
         self.Wr = nn.Linear(input_size, hidden_size)
-        init.xavier_normal(self.Wr.state_dict()['weight'])
+        init.xavier_normal_(self.Wr.state_dict()['weight'])
         self.Ur = nn.Linear(hidden_size, hidden_size)
-        init.xavier_normal(self.Ur.state_dict()['weight'])
+        init.xavier_normal_(self.Ur.state_dict()['weight'])
         self.W = nn.Linear(input_size, hidden_size)
-        init.xavier_normal(self.W.state_dict()['weight'])
+        init.xavier_normal_(self.W.state_dict()['weight'])
         self.U = nn.Linear(hidden_size, hidden_size)
-        init.xavier_normal(self.U.state_dict()['weight'])
+        init.xavier_normal_(self.U.state_dict()['weight'])
 
     def forward(self, fact, C, g):
         '''
@@ -85,9 +85,9 @@ class EpisodicMemory(nn.Module):
         self.z1 = nn.Linear(4 * hidden_size, hidden_size)
         self.z2 = nn.Linear(hidden_size, 1)
         self.next_mem = nn.Linear(3 * hidden_size, hidden_size)
-        init.xavier_normal(self.z1.state_dict()['weight'])
-        init.xavier_normal(self.z2.state_dict()['weight'])
-        init.xavier_normal(self.next_mem.state_dict()['weight'])
+        init.xavier_normal_(self.z1.state_dict()['weight'])
+        init.xavier_normal_(self.z2.state_dict()['weight'])
+        init.xavier_normal_(self.next_mem.state_dict()['weight'])
 
     def make_interaction(self, facts, questions, prevM):
         '''
@@ -113,7 +113,7 @@ class EpisodicMemory(nn.Module):
         G = F.tanh(self.z1(z))
         G = self.z2(G)
         G = G.view(batch_num, -1)
-        G = F.softmax(G)
+        G = F.softmax(G, dim=-1)
 
         return G
 
@@ -157,7 +157,7 @@ class InputModule(nn.Module):
         self.hidden_size = hidden_size
         self.gru = nn.GRU(hidden_size, hidden_size, bidirectional=True, batch_first=True)
         for name, param in self.gru.state_dict().items():
-            if 'weight' in name: init.xavier_normal(param)
+            if 'weight' in name: init.xavier_normal_(param)
         self.dropout = nn.Dropout(0.1)
 
     def forward(self, contexts, word_embedding):
@@ -186,7 +186,7 @@ class AnswerModule(nn.Module):
     def __init__(self, vocab_size, hidden_size):
         super(AnswerModule, self).__init__()
         self.z = nn.Linear(2 * hidden_size, vocab_size)
-        init.xavier_normal(self.z.state_dict()['weight'])
+        init.xavier_normal_(self.z.state_dict()['weight'])
         self.dropout = nn.Dropout(0.1)
 
     def forward(self, M, questions):
@@ -247,7 +247,7 @@ class DMNPlus(nn.Module):
         reg_loss = 0
         for param in self.parameters():
             reg_loss += 0.001 * torch.sum(param * param)
-        preds = F.softmax(output)
+        preds = F.softmax(output, dim=-1)
         _, pred_ids = torch.max(preds, dim=1)
         corrects = (pred_ids.data == targets.data)
         acc = torch.mean(corrects.float())
