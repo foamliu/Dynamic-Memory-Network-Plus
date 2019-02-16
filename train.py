@@ -1,21 +1,25 @@
 import os
 
+import numpy as np
 import torch
 from torch.autograd import Variable
 from torch.utils.data.dataloader import DataLoader
 
-from config import hidden_size
 from data_gen import BabiDataset, pad_collate
 from models import DMNPlus
+from utils import parse_args
 
 
-def main():
+def train_net(args):
+    torch.manual_seed(7)
+    np.random.seed(7)
+
     for run in range(10):
         for task_id in range(1, 21):
             dset = BabiDataset(task_id)
             vocab_size = len(dset.QA.VOCAB)
 
-            model = DMNPlus(hidden_size, vocab_size, num_hop=3, qa=dset.QA)
+            model = DMNPlus(args.hidden_size, vocab_size, num_hop=3, qa=dset.QA)
             model.cuda()
             early_stopping_cnt = 0
             early_stopping_flag = False
@@ -25,7 +29,7 @@ def main():
             for epoch in range(256):
                 dset.set_mode('train')
                 train_loader = DataLoader(
-                    dset, batch_size=batch_size, shuffle=True, collate_fn=pad_collate
+                    dset, batch_size=args.batch_size, shuffle=True, collate_fn=pad_collate
                 )
 
                 model.train()
@@ -56,7 +60,7 @@ def main():
                         optim.step()
 
                     dset.set_mode('valid')
-                    valid_loader = DataLoader(dset, batch_size=batch_size, shuffle=False, collate_fn=pad_collate)
+                    valid_loader = DataLoader(dset, batch_size=args.batch_size, shuffle=False, collate_fn=pad_collate)
 
                     model.eval()
                     total_acc = 0
@@ -100,7 +104,7 @@ def main():
                     break
 
             dset.set_mode('test')
-            test_loader = DataLoader(dset, batch_size=batch_size, shuffle=False, collate_fn=pad_collate)
+            test_loader = DataLoader(dset, batch_size=args.batch_size, shuffle=False, collate_fn=pad_collate)
             test_acc = 0
             cnt = 0
 
@@ -122,6 +126,12 @@ def main():
             with open('log.txt', 'a') as fp:
                 fp.write(
                     '[Run {}, Task {}, Epoch {}] [Test] Accuracy : {:.4f}\n'.format(run, task_id, epoch, total_acc))
+
+
+def main():
+    global args
+    args = parse_args()
+    train_net(args)
 
 
 if __name__ == '__main__':
