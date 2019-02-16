@@ -241,7 +241,7 @@ class DMNPlus(nn.Module):
                 s = self.qa.IVOCAB[token.data[0]]
                 print('{}th of batch, {}'.format(n, s))
 
-    def get_loss(self, contexts, questions, answers, targets):
+    def get_loss(self, contexts, questions, targets):
         output = self.forward(contexts, questions)
         loss = self.criterion(output, targets)
         reg_loss = 0
@@ -249,6 +249,6 @@ class DMNPlus(nn.Module):
             reg_loss += 0.001 * torch.sum(param * param)
         preds = F.softmax(output)
         _, pred_ids = torch.max(preds, dim=1)
-        corrects = (pred_ids.data == answers.data)
+        corrects = (pred_ids.data == targets.data)
         acc = torch.mean(corrects.float())
         return loss + reg_loss, acc
