@@ -53,8 +53,7 @@ def train_net(args):
                             print(
                                 '[Task {}, Epoch {}] [Training] loss : {}, acc : {:.4f}, batch_idx : {}'.format(task_id,
                                                                                                                 epoch,
-                                                                                                                loss.data[
-                                                                                                                    0],
+                                                                                                                loss.item(),
                                                                                                                 total_acc / cnt,
                                                                                                                 batch_idx))
                         optim.step()
