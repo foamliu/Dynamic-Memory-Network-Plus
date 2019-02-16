@@ -25,7 +25,7 @@ def main():
             for epoch in range(256):
                 dset.set_mode('train')
                 train_loader = DataLoader(
-                    dset, batch_size=100, shuffle=True, collate_fn=pad_collate
+                    dset, batch_size=batch_size, shuffle=True, collate_fn=pad_collate
                 )
 
                 model.train()
@@ -56,9 +56,7 @@ def main():
                         optim.step()
 
                     dset.set_mode('valid')
-                    valid_loader = DataLoader(
-                        dset, batch_size=100, shuffle=False, collate_fn=pad_collate
-                    )
+                    valid_loader = DataLoader(dset, batch_size=batch_size, shuffle=False, collate_fn=pad_collate)
 
                     model.eval()
                     total_acc = 0
@@ -102,9 +100,7 @@ def main():
                     break
 
             dset.set_mode('test')
-            test_loader = DataLoader(
-                dset, batch_size=100, shuffle=False, collate_fn=pad_collate
-            )
+            test_loader = DataLoader(dset, batch_size=batch_size, shuffle=False, collate_fn=pad_collate)
             test_acc = 0
             cnt = 0
 
