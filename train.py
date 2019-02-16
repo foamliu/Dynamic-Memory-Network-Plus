@@ -1,9 +1,10 @@
 import os
 
+import torch
 from torch.autograd import Variable
 from torch.utils.data.dataloader import DataLoader
 
-from config import *
+from config import hidden_size
 from data_gen import BabiDataset, pad_collate
 from models import DMNPlus
 
@@ -13,7 +14,6 @@ def main():
         for task_id in range(1, 21):
             dset = BabiDataset(task_id)
             vocab_size = len(dset.QA.VOCAB)
-            hidden_size = 80
 
             model = DMNPlus(hidden_size, vocab_size, num_hop=3, qa=dset.QA)
             model.cuda()

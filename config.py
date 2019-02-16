@@ -1,8 +1,1 @@
-import torch
-
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-embedding_length = 100
-batch_size = 100
-hidden_size = 100
-r = 100
+hidden_size = 80
