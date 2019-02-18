@@ -2,9 +2,11 @@
 
 [DMN+](https://arxiv.org/abs/1603.01417) implementation in Pytorch for question answering on the bAbI 10k dataset.
 
+![Input Module for DMNPlus](https://raw.githubusercontent.com/foamliu/Dynamic-Memory-Network-Plus/master/images/inputModule.png)
+
 
 ## Usage
-### Data download
+### Download data 
 Run the included shell script to fetch the data :
 ```bash
 $ chmod +x fetch_data.sh
@@ -46,3 +48,6 @@ $ python demo.py
 | 19 | 98.6% | 100% |
 | 20 | 100% | 100% |
 
+## Reference
+1. [Dynamic Memory Network for Visual and Textual Question Answering](https://arxiv.org/abs/1603.01417). 
+2. https://github.com/dandelin/Dynamic-memory-networks-plus-Pytorch
