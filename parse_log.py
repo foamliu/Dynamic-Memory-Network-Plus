@@ -18,7 +18,7 @@ if __name__ == '__main__':
             epoch_id = int(m.group(3))
             set_name = str(m.group(4))
             accuracy = float(m.group(5))
-            if accuracy > max_acc[task_id - 1]:
+            if set_name == 'T' and accuracy > max_acc[task_id - 1]:
                 max_acc[task_id - 1] = accuracy
 
     for i in range(20):
