@@ -120,7 +120,7 @@ def train_net(args):
                 cnt += batch_size
             print('[Run {}, Task {}, Epoch {}] [Test] Accuracy : {:.4f}'.format(run, task_id, epoch, test_acc / cnt))
             os.makedirs('models', exist_ok=True)
-            with open('models/task{}_epoch{}_run{}_acc{}.pth'.format(task_id, epoch, run, test_acc / cnt), 'wb') as fp:
+            with open('models/task{}_epoch{}_run{}_acc{:.4f}.pth'.format(task_id, epoch, run, test_acc / cnt), 'wb') as fp:
                 torch.save(model.state_dict(), fp)
             with open('log.txt', 'a') as fp:
                 fp.write(
